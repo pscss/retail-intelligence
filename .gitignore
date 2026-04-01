@@ -1,0 +1,42 @@
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Cache
+.cache/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# IDE
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data & models (don't commit large files)
+*.pt
+*.pth
+*.onnx
+*.pkl
+*.h5
+data/
+models/
