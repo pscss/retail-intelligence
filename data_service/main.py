@@ -10,7 +10,8 @@ from data_service.routers import (
     query_logs_router,
     tasks_router,
 )
-from data_service.session import engine
+from data_service.seed import SeedFaqs, SeedProducts
+from data_service.session import AsyncSessionLocal, engine
 from shared.config import settings
 
 
@@ -18,6 +19,9 @@ from shared.config import settings
 async def lifespan(app: FastAPI):
     """Startup and shutdown events."""
     print(f"Starting {settings.project_name} data-service...")
+    async with AsyncSessionLocal() as db:
+        await SeedProducts().run(db)
+        await SeedFaqs().run(db)
     yield
     await engine.dispose()
     print("Shutting down data-service...")

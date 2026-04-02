@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     # Auth
     api_key: str
 
+    # Kaggle
+    kaggle_api_token: str = ""
+
     @property
     def database_url(self) -> str:
         """PostgreSQL connection URL."""

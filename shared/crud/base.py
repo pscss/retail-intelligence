@@ -23,6 +23,11 @@ class BaseCRUD(Generic[ModelType, CreateSchema, UpdateSchema]):
         result = await db.execute(select(self.model).where(self.model.id == id))
         return result.scalar_one_or_none()
 
+    async def count(self, db: AsyncSession) -> int:
+        """Count total records."""
+        result = await db.execute(select(func.count(self.model.id)))
+        return result.scalar_one()
+
     async def get_all(
         self, db: AsyncSession, skip: int = 0, limit: int = 100
     ) -> tuple[list[ModelType], int]:
