@@ -7,8 +7,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from data_service.db import FAQ, Product, QueryLog, TaskRegistry  # noqa: F401
-from data_service.db.session import Base
+from data_service.models import FAQ, Product, QueryLog, TaskRegistry  # noqa: F401
+from data_service.session import Base
 from shared.config import settings
 
 config = context.config

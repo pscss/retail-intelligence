@@ -1,12 +1,16 @@
 """Database session and engine configuration."""
 
+import os
+
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from shared.config import settings
 
+db_url = os.getenv("DATABASE_URL", settings.database_url_local)
+
 engine = create_async_engine(
-    settings.database_url,
+    db_url,
     pool_size=10,
     max_overflow=20,
     pool_timeout=30,
