@@ -2,6 +2,9 @@
     "python.envFile": "${workspaceFolder}/.env",
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.extraPaths": ["."],
+    "editor.rulers": [88],
+    "python.linting.enabled": false,
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,
