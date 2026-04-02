@@ -3,6 +3,7 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: retail_postgres
+    env_file: .env.docker
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -22,6 +23,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: retail_redis
+    env_file: .env.docker
     ports:
       - "6379:6379"
     volumes:
