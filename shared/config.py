@@ -38,6 +38,15 @@ class Settings(BaseSettings):
         )
 
     @property
+    def database_url_local(self) -> str:
+        """Local development PostgreSQL URL (uses localhost)."""
+        return (
+            f"postgresql+asyncpg://{self.postgres_user}:"
+            f"{self.postgres_password}@localhost:"
+            f"{self.postgres_port}/{self.postgres_db}"
+        )
+
+    @property
     def redis_url(self) -> str:
         """Redis connection URL."""
         return f"redis://{self.redis_host}:{self.redis_port}"
