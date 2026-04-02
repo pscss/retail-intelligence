@@ -1,0 +1,143 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  version-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run tests
+        run: uv run pytest -v
+        env:
+          POSTGRES_USER: retail
+          POSTGRES_PASSWORD: retail123
+          POSTGRES_DB: retail_intelligence
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 6432
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          API_KEY: dev-api-key-change-in-prod
+          KAGGLE_API_TOKEN: dummy
+          DEBUG: true
+
+      - name: Get current version
+        id: get_version
+        run: |
+          VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/version = "//;s/"//')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        id: bump_version
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          CURRENT="${{ steps.get_version.outputs.version }}"
+          BASE=$(echo $CURRENT | sed 's/-dev//')
+          MAJOR=$(echo $BASE | cut -d. -f1)
+          MINOR=$(echo $BASE | cut -d. -f2)
+          PATCH=$(echo $BASE | cut -d. -f3)
+          NEW_PATCH=$((PATCH + 1))
+
+          if [ "$BRANCH" = "master" ]; then
+            NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+          else
+            NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH-dev"
+          fi
+
+          sed -i "s/version = \"$CURRENT\"/version = \"$NEW_VERSION\"/" pyproject.toml
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set Docker tag
+        id: docker_tag
+        run: |
+          if [ "${{ github.ref_name }}" = "master" ]; then
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          else
+            echo "tag=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push data-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: data_service/Dockerfile
+          push: true
+          tags: |
+            pscss/retail-intelligence-data-service:${{ steps.docker_tag.outputs.tag }}
+            pscss/retail-intelligence-data-service:${{ steps.bump_version.outputs.new_version }}
+
+      - name: Build and push inference-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: inference_service/Dockerfile
+          push: true
+          tags: |
+            pscss/retail-intelligence-inference-service:${{ steps.docker_tag.outputs.tag }}
+            pscss/retail-intelligence-inference-service:${{ steps.bump_version.outputs.new_version }}
+
+      - name: Build and push retrieval-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: retrieval_service/Dockerfile
+          push: true
+          tags: |
+            pscss/retail-intelligence-retrieval-service:${{ steps.docker_tag.outputs.tag }}
+            pscss/retail-intelligence-retrieval-service:${{ steps.bump_version.outputs.new_version }}
+
+      - name: Build and push gateway-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: gateway_service/Dockerfile
+          push: true
+          tags: |
+            pscss/retail-intelligence-gateway-service:${{ steps.docker_tag.outputs.tag }}
+            pscss/retail-intelligence-gateway-service:${{ steps.bump_version.outputs.new_version }}
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml
+          git commit -m "chore: bump version to ${{ steps.bump_version.outputs.new_version }}"
+          git push
+
+      - name: Create GitHub Release (master only)
+        if: github.ref_name == 'master'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.bump_version.outputs.new_version }}
+          name: Release v${{ steps.bump_version.outputs.new_version }}
+          generate_release_notes: true
