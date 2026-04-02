@@ -13,11 +13,11 @@ class Settings(BaseSettings):
     postgres_user: str
     postgres_password: str
     postgres_db: str
-    postgres_host: str = "postgres"
+    postgres_host: str = "localhost"
     postgres_port: int = 5432
 
     # Redis
-    redis_host: str = "redis"
+    redis_host: str = "localhost"
     redis_port: int = 6379
 
     # Services
@@ -30,19 +30,10 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        """Async PostgreSQL connection URL."""
+        """PostgreSQL connection URL."""
         return (
             f"postgresql+asyncpg://{self.postgres_user}:"
             f"{self.postgres_password}@{self.postgres_host}:"
-            f"{self.postgres_port}/{self.postgres_db}"
-        )
-
-    @property
-    def database_url_local(self) -> str:
-        """Local development PostgreSQL URL (uses localhost)."""
-        return (
-            f"postgresql+asyncpg://{self.postgres_user}:"
-            f"{self.postgres_password}@localhost:"
             f"{self.postgres_port}/{self.postgres_db}"
         )
 

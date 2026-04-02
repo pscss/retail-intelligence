@@ -1,7 +1,6 @@
 """Alembic environment configuration."""
 
 import asyncio
-import os
 from logging.config import fileConfig
 
 from alembic import context
@@ -31,8 +30,7 @@ def run_migrations_offline() -> None:
 
 async def run_migrations_online() -> None:
     """Run migrations in online mode."""
-    db_url = os.getenv("ALEMBIC_DB_URL", settings.database_url_local)
-    connectable = create_async_engine(db_url)
+    connectable = create_async_engine(settings.database_url)
     async with connectable.connect() as connection:
         await connection.run_sync(
             lambda conn: context.configure(
