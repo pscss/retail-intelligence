@@ -93,9 +93,18 @@ known-first-party = ["shared", "gateway_service", "data_service", "inference_ser
 
 [tool.mypy]
 python_version = "3.11"
+strict = true
 ignore_missing_imports = true
 warn_return_any = true
 warn_unused_configs = true
+exclude = [
+    "alembic/",
+    "tests/",
+    "data_service/tests/",
+    "inference_service/tests/",
+    "retrieval_service/tests/",
+    "gateway_service/tests/",
+]
 
 [tool.pytest.ini_options]
 testpaths = [

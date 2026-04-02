@@ -32,6 +32,9 @@ jobs:
       - name: Ruff lint
         run: uv run ruff check .
 
+      - name: Mypy type check
+        run: uv run mypy .
+
       - name: Run tests
         run: uv run pytest -v
         env:
