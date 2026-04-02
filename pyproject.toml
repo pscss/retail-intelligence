@@ -22,6 +22,7 @@ dependencies = [
     "kaggle>=2.0.0",
     "pandas>=3.0.2",
     "datasets>=4.8.4",
+    "strawberry-graphql>=0.312.2",
 ]
 
 [dependency-groups]
@@ -88,7 +89,7 @@ ignore = [
 "*/routers/*.py" = ["B008"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["shared", "gateway", "data_service", "inference_service", "retrieval_service"]
+known-first-party = ["shared", "gateway_service", "data_service", "inference_service", "retrieval_service"]
 
 [tool.mypy]
 python_version = "3.11"
@@ -97,11 +98,23 @@ warn_return_any = true
 warn_unused_configs = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = [
+    "tests",
+    "data_service/tests",
+    "inference_service/tests",
+    "retrieval_service/tests",
+    "gateway_service/tests",
+]
 pythonpath = ["."]
+filterwarnings = [
+    "ignore:.*joblib will operate in serial mode.*:UserWarning",
+    "ignore:.*SwigPyPacked.*:DeprecationWarning",
+    "ignore:.*SwigPyObject.*:DeprecationWarning",
+    "ignore:.*swigvarlink.*:DeprecationWarning",
+]
 
 [tool.coverage.run]
-source = ["shared", "gateway", "data_service", "inference_service", "retrieval_service"]
+source = ["shared", "gateway_service", "data_service", "inference_service", "retrieval_service"]
 omit = ["tests/*", ".venv/*"]
 
 [tool.coverage.report]

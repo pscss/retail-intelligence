@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     postgres_password: str
     postgres_db: str
     postgres_host: str = "localhost"
-    postgres_port: int = 5432
+    postgres_port: int = 5432  # default, overridden by .env
 
     # Redis
     redis_host: str = "localhost"
@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     inference_service_url: str = "http://inference_service:8001"
     retrieval_service_url: str = "http://retrieval_service:8002"
     data_service_url: str = "http://data_service:8003"
+    gateway_service_url: str = "http://localhost:8000"
 
     # Auth
     api_key: str
