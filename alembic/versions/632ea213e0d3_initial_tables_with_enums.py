@@ -1,8 +1,8 @@
-"""initial tables
+"""initial tables with enums
 
-Revision ID: df73b5c3c144
+Revision ID: 632ea213e0d3
 Revises:
-Create Date: 2026-04-02 01:28:06.233680
+Create Date: 2026-04-02 01:47:37.139323
 
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "df73b5c3c144"
+revision: str = "632ea213e0d3"
 down_revision: str | Sequence[str] | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -46,12 +46,20 @@ def upgrade() -> None:
     op.create_table(
         "query_logs",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("operation", sa.String(length=100), nullable=False),
+        sa.Column(
+            "operation",
+            sa.Enum(
+                "SENTIMENT", "INTENT", "TRIAGE", "SEARCH", "FAQ", name="operationtype"
+            ),
+            nullable=False,
+        ),
         sa.Column("input_hash", sa.String(length=64), nullable=True),
         sa.Column("result_label", sa.String(length=100), nullable=True),
         sa.Column("confidence", sa.Float(), nullable=True),
         sa.Column("latency_ms", sa.Integer(), nullable=True),
-        sa.Column("served_from", sa.String(length=20), nullable=True),
+        sa.Column(
+            "served_from", sa.Enum("MODEL", "CACHE", name="servedfrom"), nullable=True
+        ),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -62,7 +70,11 @@ def upgrade() -> None:
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("model", sa.String(length=200), nullable=True),
         sa.Column("service_url", sa.String(length=200), nullable=True),
-        sa.Column("operation_type", sa.String(length=20), nullable=True),
+        sa.Column(
+            "operation_type",
+            sa.Enum("QUERY", "MUTATION", name="taskoperationtype"),
+            nullable=True,
+        ),
         sa.Column("is_active", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
