@@ -46,7 +46,7 @@ class Settings(BaseSettings):
         """Redis connection URL."""
         return f"redis://{self.redis_host}:{self.redis_port}"
 
-    model_config = {"env_file": ".env", "extra": "ignore"}
+    model_config = {"env_file": ".env", "extra": "ignore", "populate_by_name": True}
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]

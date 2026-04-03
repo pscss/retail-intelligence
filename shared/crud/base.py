@@ -1,15 +1,26 @@
 """Base CRUD class — inherited by all service-specific CRUD classes."""
 
-from typing import Generic, TypeVar
+from typing import Any, Generic, Protocol, TypeVar
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from data_service.session import Base
 
-ModelType = TypeVar("ModelType", bound=Base)
-CreateSchema = TypeVar("CreateSchema")
-UpdateSchema = TypeVar("UpdateSchema")
+class HasId(Protocol):
+    """Protocol for models with an id attribute."""
+
+    id: Any
+
+
+class HasModelDump(Protocol):
+    """Protocol for Pydantic schemas."""
+
+    def model_dump(self, *, exclude_none: bool = False) -> dict[str, Any]: ...
+
+
+ModelType = TypeVar("ModelType", bound=HasId)
+CreateSchema = TypeVar("CreateSchema", bound=HasModelDump)
+UpdateSchema = TypeVar("UpdateSchema", bound=HasModelDump)
 
 
 class BaseCRUD(Generic[ModelType, CreateSchema, UpdateSchema]):
@@ -18,15 +29,15 @@ class BaseCRUD(Generic[ModelType, CreateSchema, UpdateSchema]):
     def __init__(self, model: type[ModelType]) -> None:
         self.model = model
 
-    async def get(self, db: AsyncSession, id: int) -> ModelType | None:
-        """Get a single record by primary key."""
-        result = await db.execute(select(self.model).where(self.model.id == id))
-        return result.scalar_one_or_none()
-
     async def count(self, db: AsyncSession) -> int:
         """Count total records."""
         result = await db.execute(select(func.count(self.model.id)))
         return result.scalar_one()
+
+    async def get(self, db: AsyncSession, id: int) -> ModelType | None:
+        """Get a single record by primary key."""
+        result = await db.execute(select(self.model).where(self.model.id == id))
+        return result.scalar_one_or_none()
 
     async def get_all(
         self, db: AsyncSession, skip: int = 0, limit: int = 100
@@ -82,7 +93,7 @@ class BaseCRUD(Generic[ModelType, CreateSchema, UpdateSchema]):
     async def bulk_update(
         self, db: AsyncSession, updates: list[tuple[int, UpdateSchema]]
     ) -> list[ModelType]:
-        """Update multiple records. Takes list of (id, update_schema) tuples."""
+        """Update multiple records."""
         updated = []
         for id, data in updates:
             obj = await self.update(db, id, data)

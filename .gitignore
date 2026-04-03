@@ -24,6 +24,8 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
+*.pyc
+*.pyo
 
 # IDE
 *.swp
@@ -39,4 +41,4 @@ Thumbs.db
 *.pkl
 *.h5
 data/
-models/
+*.egg-info/

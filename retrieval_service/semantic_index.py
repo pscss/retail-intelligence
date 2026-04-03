@@ -12,7 +12,7 @@ MODEL_NAME = "all-MiniLM-L6-v2"
 EMBEDDING_DIM = 384
 
 
-class FAISSIndex:
+class SemanticIndex:
     """Manages a FAISS index for semantic search."""
 
     def __init__(self, name: str) -> None:
@@ -43,6 +43,7 @@ class FAISSIndex:
         start = time.time()
 
         texts = [doc[text_field] for doc in documents]
+        assert self._model is not None  # for type checker
         embeddings = self._model.encode(
             texts,
             batch_size=64,
@@ -97,5 +98,5 @@ class FAISSIndex:
         return len(self._documents)
 
 
-product_index = FAISSIndex(name="products")
-faq_index = FAISSIndex(name="faqs")
+product_index = SemanticIndex(name="products")
+faq_index = SemanticIndex(name="faqs")
