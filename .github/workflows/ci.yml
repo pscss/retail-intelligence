@@ -30,7 +30,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Install local packages
-        run: uv pip install -e . --no-deps
+        run: uv run pip install -e . --no-deps
 
       - name: Ruff lint
         run: uv run ruff check .
