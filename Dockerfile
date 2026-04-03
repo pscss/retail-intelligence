@@ -18,7 +18,6 @@ COPY retrieval_service/ ./retrieval_service/
 COPY gateway_service/ ./gateway_service/
 
 RUN uv sync --frozen --no-dev
-RUN uv run pip install torch --index-url https://download.pytorch.org/whl/cpu --force-reinstall
 
 ARG SERVICE
 ARG PORT
