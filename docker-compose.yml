@@ -38,7 +38,10 @@ services:
   data-service:
     build:
       context: .
-      dockerfile: data_service/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        SERVICE: data_service
+        PORT: 8003
     container_name: retail_data_service
     env_file: .env.docker
     ports:
@@ -54,7 +57,10 @@ services:
   inference-service:
     build:
       context: .
-      dockerfile: inference_service/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        SERVICE: inference_service
+        PORT: 8001
     container_name: retail_inference_service
     env_file: .env.docker
     ports:
@@ -68,7 +74,10 @@ services:
   retrieval-service:
     build:
       context: .
-      dockerfile: retrieval_service/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        SERVICE: retrieval_service
+        PORT: 8002
     container_name: retail_retrieval_service
     env_file: .env.docker
     ports:
@@ -84,7 +93,10 @@ services:
   gateway-service:
     build:
       context: .
-      dockerfile: gateway_service/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        SERVICE: gateway_service
+        PORT: 8000
     container_name: retail_gateway_service
     env_file: .env.docker
     ports:

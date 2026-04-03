@@ -1,4 +1,4 @@
-name: CD
+name: CD — Version, Build, Push
 
 on:
   push:
@@ -31,11 +31,12 @@ jobs:
       - name: Run tests
         run: uv run pytest -v
         env:
+          PYTHONPATH: .
           POSTGRES_USER: retail
           POSTGRES_PASSWORD: retail123
           POSTGRES_DB: retail_intelligence
           POSTGRES_HOST: localhost
-          POSTGRES_PORT: 6432
+          POSTGRES_PORT: 5432
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           API_KEY: dev-api-key-change-in-prod
@@ -90,8 +91,11 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: data_service/Dockerfile
+          file: Dockerfile
           push: true
+          build-args: |
+            SERVICE=data_service
+            PORT=8003
           tags: |
             pscss/retail-intelligence-data-service:${{ steps.docker_tag.outputs.tag }}
             pscss/retail-intelligence-data-service:${{ steps.bump_version.outputs.new_version }}
@@ -100,8 +104,11 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: inference_service/Dockerfile
+          file: Dockerfile
           push: true
+          build-args: |
+            SERVICE=inference_service
+            PORT=8001
           tags: |
             pscss/retail-intelligence-inference-service:${{ steps.docker_tag.outputs.tag }}
             pscss/retail-intelligence-inference-service:${{ steps.bump_version.outputs.new_version }}
@@ -110,8 +117,11 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: retrieval_service/Dockerfile
+          file: Dockerfile
           push: true
+          build-args: |
+            SERVICE=retrieval_service
+            PORT=8002
           tags: |
             pscss/retail-intelligence-retrieval-service:${{ steps.docker_tag.outputs.tag }}
             pscss/retail-intelligence-retrieval-service:${{ steps.bump_version.outputs.new_version }}
@@ -120,8 +130,11 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: gateway_service/Dockerfile
+          file: Dockerfile
           push: true
+          build-args: |
+            SERVICE=gateway_service
+            PORT=8000
           tags: |
             pscss/retail-intelligence-gateway-service:${{ steps.docker_tag.outputs.tag }}
             pscss/retail-intelligence-gateway-service:${{ steps.bump_version.outputs.new_version }}

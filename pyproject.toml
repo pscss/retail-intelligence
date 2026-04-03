@@ -38,6 +38,22 @@ dev = [
     "ruff>=0.15.8",
 ]
 
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+# torchvision = { index = "pytorch-cpu" }
+
+# 1. Explicitly set PyPI as the default for everything else (like Alembic)
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
+
+# 2. Set the PyTorch index as explicit-only
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
 [tool.poe]
 
 [tool.poe.tasks]
