@@ -9,9 +9,9 @@ def test_health() -> None:
     """Health endpoint returns healthy status."""
     with (
         patch(
-            "data_service.seed.seed_products.SeedProducts.run", new_callable=AsyncMock
+            "data_service.main.SeedProducts", return_value=AsyncMock(run=AsyncMock())
         ),
-        patch("data_service.seed.seed_faqs.SeedFaqs.run", new_callable=AsyncMock),
+        patch("data_service.main.SeedFaqs", return_value=AsyncMock(run=AsyncMock())),
     ):
         from data_service.main import app
 
