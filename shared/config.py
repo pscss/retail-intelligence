@@ -49,4 +49,4 @@ class Settings(BaseSettings):
     model_config = {"env_file": ".env", "extra": "ignore", "populate_by_name": True}
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]

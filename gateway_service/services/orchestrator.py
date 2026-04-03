@@ -49,7 +49,7 @@ class GatewayOrchestrator:
         return result
 
     async def search(self, query: str, top_k: int) -> dict:
-        result = await retrieval_client.search(query, top_k)
+        result = await retrieval_client.search_products(query, top_k)
         await self._log_async(
             operation=OperationType.SEARCH,
             text=query,
@@ -58,7 +58,7 @@ class GatewayOrchestrator:
         return result
 
     async def rag(self, question: str, top_k: int) -> dict:
-        result = await retrieval_client.rag(question, top_k)
+        result = await retrieval_client.query_faq(question, top_k)
         await self._log_async(
             operation=OperationType.FAQ,
             text=question,

@@ -3304,7 +3304,7 @@ wheels = [
 [[package]]
 name = "retail-intelligence"
 version = "0.1.0.dev0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "alembic" },
     { name = "asyncpg" },
@@ -3318,7 +3318,6 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "redis" },
     { name = "sentence-transformers" },
-    { name = "setuptools" },
     { name = "sqlalchemy" },
     { name = "strawberry-graphql" },
     { name = "torch" },
@@ -3353,7 +3352,6 @@ requires-dist = [
     { name = "pydantic-settings", specifier = ">=2.0.0" },
     { name = "redis", specifier = ">=5.0.0" },
     { name = "sentence-transformers", specifier = ">=5.3.0" },
-    { name = "setuptools", specifier = ">=81.0.0" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
     { name = "strawberry-graphql", specifier = ">=0.312.2" },
     { name = "torch", specifier = ">=2.11.0" },

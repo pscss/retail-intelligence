@@ -43,6 +43,7 @@ class FAISSIndex:
         start = time.time()
 
         texts = [doc[text_field] for doc in documents]
+        assert self._model is not None  # for type checker
         embeddings = self._model.encode(
             texts,
             batch_size=64,

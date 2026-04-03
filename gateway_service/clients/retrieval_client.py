@@ -9,7 +9,7 @@ class RetrievalClient:
     """Client wrapper for retrieval service operations."""
 
     def __init__(self) -> None:
-        self._client: httpx.AsyncClient | None = None
+        self._client: httpx.AsyncClient = httpx.AsyncClient()
 
     async def start(self) -> None:
         self._client = httpx.AsyncClient()

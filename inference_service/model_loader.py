@@ -1,6 +1,7 @@
 """Model loader — loads all transformer models at startup."""
 
 import time
+from typing import Any
 
 from transformers import pipeline
 
@@ -11,16 +12,16 @@ class ModelLoader:
     """Loads and caches all transformer models."""
 
     def __init__(self) -> None:
-        self._sentiment_model = None
-        self._intent_model = None
-        self._triage_model = None
+        self._sentiment_model: Any = None
+        self._intent_model: Any = None
+        self._triage_model: Any = None
         self._loaded = False
 
     def load_all(self) -> None:
         """Load all models into memory. Called once at startup."""
         print("Loading sentiment model...")
         start = time.time()
-        self._sentiment_model = pipeline(
+        self._sentiment_model = pipeline(  # type: ignore[call-overload]
             "sentiment-analysis",
             model="distilbert-base-uncased-finetuned-sst-2-english",
             truncation=True,
@@ -50,7 +51,7 @@ class ModelLoader:
         print("All models loaded.")
 
     @property
-    def sentiment(self):
+    def sentiment(self) -> Any:
         """Get sentiment model."""
         if not self._sentiment_model:
             raise ModelNotLoadedError(
@@ -60,7 +61,7 @@ class ModelLoader:
         return self._sentiment_model
 
     @property
-    def intent(self):
+    def intent(self) -> Any:
         """Get intent model."""
         if not self._intent_model:
             raise ModelNotLoadedError(
@@ -70,7 +71,7 @@ class ModelLoader:
         return self._intent_model
 
     @property
-    def triage(self):
+    def triage(self) -> Any:
         """Get triage model."""
         if not self._triage_model:
             raise ModelNotLoadedError(
