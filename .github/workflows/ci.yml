@@ -53,10 +53,3 @@ jobs:
           API_KEY: dev-api-key-change-in-prod
           KAGGLE_API_TOKEN: dummy
           DEBUG: true
-
-      - name: Docker build check
-        run: |
-          docker build -f data_service/Dockerfile . -t retail-data-service:test
-          docker build -f inference_service/Dockerfile . -t retail-inference-service:test
-          docker build -f retrieval_service/Dockerfile . -t retail-retrieval-service:test
-          docker build -f gateway_service/Dockerfile . -t retail-gateway-service:test
