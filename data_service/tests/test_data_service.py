@@ -7,13 +7,12 @@ from fastapi.testclient import TestClient
 
 def test_health() -> None:
     """Health endpoint returns healthy status."""
-    import data_service.main  # noqa
-
     with (
         patch(
             "data_service.main.SeedProducts", return_value=AsyncMock(run=AsyncMock())
         ),
         patch("data_service.main.SeedFaqs", return_value=AsyncMock(run=AsyncMock())),
+        patch("data_service.main.command.upgrade"),
     ):
         from data_service.main import app
 
