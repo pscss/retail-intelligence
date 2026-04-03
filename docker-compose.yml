@@ -44,6 +44,9 @@ services:
         PORT: 8003
     container_name: retail_data_service
     env_file: .env.docker
+    environment:
+      SERVICE: data_service
+      PORT: 8003
     ports:
       - "8003:8003"
     depends_on:
@@ -63,6 +66,9 @@ services:
         PORT: 8001
     container_name: retail_inference_service
     env_file: .env.docker
+    environment:
+      SERVICE: inference_service
+      PORT: 8001
     ports:
       - "8001:8001"
     depends_on:
@@ -80,6 +86,9 @@ services:
         PORT: 8002
     container_name: retail_retrieval_service
     env_file: .env.docker
+    environment:
+      SERVICE: retrieval_service
+      PORT: 8002
     ports:
       - "8002:8002"
     depends_on:
@@ -99,6 +108,9 @@ services:
         PORT: 8000
     container_name: retail_gateway_service
     env_file: .env.docker
+    environment:
+      SERVICE: gateway_service
+      PORT: 8000
     ports:
       - "8000:8000"
     depends_on:

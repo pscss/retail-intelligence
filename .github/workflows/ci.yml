@@ -1,4 +1,4 @@
-name: CI
+name: CI — Lint, Type Check, Test
 
 on:
   push:
@@ -9,6 +9,9 @@ on:
     branches:
       - develop
       - master
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   test:
@@ -24,19 +27,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
         run: uv sync --frozen
-
-      - name: Install local packages
-        run: uv run pip install -e . --no-deps
 
       - name: Ruff lint
         run: uv run ruff check .
 
       - name: Mypy type check
-        run: uv run mypy . --ignore-missing-imports
+        run: uv run mypy .
         continue-on-error: true
 
       - name: Run tests
@@ -47,7 +47,7 @@ jobs:
           POSTGRES_PASSWORD: retail123
           POSTGRES_DB: retail_intelligence
           POSTGRES_HOST: localhost
-          POSTGRES_PORT: 6432
+          POSTGRES_PORT: 5432
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           API_KEY: dev-api-key-change-in-prod

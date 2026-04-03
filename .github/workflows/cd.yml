@@ -6,6 +6,9 @@ on:
       - develop
       - master
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   version-and-push:
     runs-on: ubuntu-latest
@@ -23,7 +26,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
         run: uv sync --frozen
@@ -87,57 +90,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push data-service
+      - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: Dockerfile
           push: true
-          build-args: |
-            SERVICE=data_service
-            PORT=8003
           tags: |
-            pscss/retail-intelligence-data-service:${{ steps.docker_tag.outputs.tag }}
-            pscss/retail-intelligence-data-service:${{ steps.bump_version.outputs.new_version }}
-
-      - name: Build and push inference-service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          build-args: |
-            SERVICE=inference_service
-            PORT=8001
-          tags: |
-            pscss/retail-intelligence-inference-service:${{ steps.docker_tag.outputs.tag }}
-            pscss/retail-intelligence-inference-service:${{ steps.bump_version.outputs.new_version }}
-
-      - name: Build and push retrieval-service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          build-args: |
-            SERVICE=retrieval_service
-            PORT=8002
-          tags: |
-            pscss/retail-intelligence-retrieval-service:${{ steps.docker_tag.outputs.tag }}
-            pscss/retail-intelligence-retrieval-service:${{ steps.bump_version.outputs.new_version }}
-
-      - name: Build and push gateway-service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          build-args: |
-            SERVICE=gateway_service
-            PORT=8000
-          tags: |
-            pscss/retail-intelligence-gateway-service:${{ steps.docker_tag.outputs.tag }}
-            pscss/retail-intelligence-gateway-service:${{ steps.bump_version.outputs.new_version }}
+            pscss/retail-intelligence:${{ steps.docker_tag.outputs.tag }}
+            pscss/retail-intelligence:${{ steps.bump_version.outputs.new_version }}
 
       - name: Commit version bump
         run: |
