@@ -1,7 +1,10 @@
 """Data service — owns PostgreSQL, corpus management, query logging."""
 
+import asyncio
 from contextlib import asynccontextmanager
 
+from alembic import command
+from alembic.config import Config
 from fastapi import FastAPI
 
 from data_service.routers import (
@@ -19,6 +22,13 @@ from shared.config import settings
 async def lifespan(app: FastAPI):
     """Startup and shutdown events."""
     print(f"Starting {settings.project_name} data-service...")
+
+    # Run migrations in thread pool to avoid blocking event loop
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(
+        None, lambda: command.upgrade(Config("alembic.ini"), "head")
+    )
+
     async with AsyncSessionLocal() as db:
         await SeedProducts().run(db)
         await SeedFaqs().run(db)

@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     # Redis
     redis_host: str = "localhost"
     redis_port: int = 6379
+    redis_password: str = ""
+    redis_user: str = "default"
 
     # Services
     inference_service_url: str = "http://inference_service:8001"
@@ -44,6 +46,8 @@ class Settings(BaseSettings):
     @property
     def redis_url(self) -> str:
         """Redis connection URL."""
+        if self.redis_password:
+            return f"redis://{self.redis_user}:{self.redis_password}@{self.redis_host}:{self.redis_port}"  # noqa
         return f"redis://{self.redis_host}:{self.redis_port}"
 
     model_config = {"env_file": ".env", "extra": "ignore", "populate_by_name": True}
