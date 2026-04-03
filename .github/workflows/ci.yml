@@ -42,6 +42,7 @@ jobs:
       - name: Run tests
         run: uv run pytest -v
         env:
+          PYTHONPATH: .
           POSTGRES_USER: retail
           POSTGRES_PASSWORD: retail123
           POSTGRES_DB: retail_intelligence
