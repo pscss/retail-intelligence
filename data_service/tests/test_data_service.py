@@ -8,8 +8,10 @@ from fastapi.testclient import TestClient
 def test_health() -> None:
     """Health endpoint returns healthy status."""
     with (
-        patch("data_service.main.SeedProducts.run", new_callable=AsyncMock),
-        patch("data_service.main.SeedFaqs.run", new_callable=AsyncMock),
+        patch(
+            "data_service.seed.seed_products.SeedProducts.run", new_callable=AsyncMock
+        ),
+        patch("data_service.seed.seed_faqs.SeedFaqs.run", new_callable=AsyncMock),
     ):
         from data_service.main import app
 
