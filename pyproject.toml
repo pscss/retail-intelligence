@@ -23,6 +23,7 @@ dependencies = [
     "pandas>=3.0.2",
     "datasets>=4.8.4",
     "strawberry-graphql>=0.312.2",
+    "setuptools>=81.0.0",
 ]
 
 [dependency-groups]
@@ -132,4 +133,14 @@ omit = ["tests/*", ".venv/*"]
 exclude_lines = [
     "if __name__ == .__main__.",
     "pragma: no cover",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "shared*",
+    "data_service*",
+    "inference_service*",
+    "retrieval_service*",
+    "gateway_service*",
 ]
