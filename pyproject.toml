@@ -25,9 +25,6 @@ dependencies = [
     "strawberry-graphql>=0.312.2"
 ]
 
-[tool.uv]
-package = true
-
 [dependency-groups]
 dev = [
     "coverage>=7.13.5",

@@ -3304,7 +3304,7 @@ wheels = [
 [[package]]
 name = "retail-intelligence"
 version = "0.1.0.dev0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "alembic" },
     { name = "asyncpg" },
