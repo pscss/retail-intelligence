@@ -12,10 +12,13 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 COPY pyproject.toml uv.lock ./
 COPY constants.py ./
 COPY shared/ ./shared/
+COPY alembic.ini ./
+COPY alembic/ ./alembic/
 COPY data_service/ ./data_service/
 COPY inference_service/ ./inference_service/
 COPY retrieval_service/ ./retrieval_service/
 COPY gateway_service/ ./gateway_service/
+
 
 RUN uv sync --frozen --no-dev
 

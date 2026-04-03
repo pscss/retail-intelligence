@@ -1,0 +1,66 @@
+services:
+  data-service:
+    image: retail-intelligence:test
+    environment:
+      SERVICE: data_service
+      PORT: 8003
+    env_file: .env.docker
+    ports:
+      - "8003:8003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - retail_network
+
+  inference-service:
+    image: retail-intelligence:test
+    environment:
+      SERVICE: inference_service
+      PORT: 8001
+    env_file: .env.docker
+    ports:
+      - "8001:8001"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - retail_network
+
+  retrieval-service:
+    image: retail-intelligence:test
+    environment:
+      SERVICE: retrieval_service
+      PORT: 8002
+    env_file: .env.docker
+    ports:
+      - "8002:8002"
+    depends_on:
+      data-service:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      - retail_network
+
+  gateway-service:
+    image: retail-intelligence:test
+    environment:
+      SERVICE: gateway_service
+      PORT: 8000
+    env_file: .env.docker
+    ports:
+      - "8000:8000"
+    depends_on:
+      data-service:
+        condition: service_started
+      inference-service:
+        condition: service_started
+      retrieval-service:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      - retail_network
